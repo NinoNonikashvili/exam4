@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startPage">
+
+    <fragment
+        android:id="@+id/startPage"
+        android:name="com.example.exam4.startPage"
+        android:label="fragment_start_page"
+        tools:layout="@layout/fragment_start_page" >
+        <action
+            android:id="@+id/action_startPage_to_gamePage"
+            app:destination="@id/gamePage" />
+    </fragment>
+    <fragment
+        android:id="@+id/gamePage"
+        android:name="com.example.exam4.gamePage"
+        android:label="fragment_game_page"
+        tools:layout="@layout/fragment_game_page" />
+</navigation>
