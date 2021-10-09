@@ -21,7 +21,7 @@ import com.example.exam4.databinding.FragmentStartPageBinding
 class gamePage : Fragment() {
     private var counter: Int = 0
     private var image: Int = 0
-    private var color: Int = 0
+
     private val listX: MutableList<Int> = mutableListOf()
     private val listO: MutableList<Int> = mutableListOf()
     private lateinit var binding: FragmentGamePageBinding
@@ -29,8 +29,8 @@ class gamePage : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val row = arguments?.getString("row")
+
 
         val list = if (row?.toInt() == 3) List(9) { R.mipmap.ic_launcher }
         else if (row!!.toInt() == 4) List(16) { R.mipmap.ic_launcher }
@@ -57,7 +57,7 @@ class gamePage : Fragment() {
             var btn = ImageButton(activity)
             var id = 0
             btn.id = id
-            Log.d("firstbtn", "$id")
+            btn.setImageResource(R.drawable.ic_noun_square_88238)
             binding.myGrid.addView(btn)
             id++
 
@@ -83,46 +83,53 @@ class gamePage : Fragment() {
         }
         val clickedBtn: ImageButton = binding.myGrid.getChildAt(i) as ImageButton
         clickedBtn.setImageResource(image)
-        if (counter == row * row - 1) end(row)
-
-
-        Log.d("counter", "$counter")
+        clickedBtn.setOnClickListener(null)
+        checkPattern(row.toInt())
+        if (counter == row * row - 1) end("It's draw", row)
 
         counter++
     }
 
-    fun end(row:Int) {
-        checkPattern(row.toInt())
-        Toast.makeText(activity, "Game Over", Toast.LENGTH_SHORT).show()
-    }
-    fun checkPattern(row:Int) {
-
-
-            for (i in 0 until row-1) {
-                if (listX == listOf(i until row-1) ||
-                    listX == listOf(i until row-1 step row-1) ||
-                    listX == listOf(0, 4, 7) ||
-                    listX == listOf(2, 4, 6)||
-                    listX == listOf(0, 7, 14)||
-                    listX == listOf(4, 7, 10)
-                ) Toast.makeText(activity, "player 1 wins", Toast.LENGTH_SHORT).show()
-                return
-            }
-            for (i in 0..2) {
-                if (listO == listOf(i until row-1) ||
-                    listO == listOf(i until row-1 step row-1) ||
-                    listO == listOf(0, 4, 7) ||
-                    listO == listOf(2, 4, 6)||
-                    listO == listOf(0, 7, 14)||
-                    listO == listOf(4, 7, 10)
-                ) Toast.makeText(activity, "player 2 wins", Toast.LENGTH_SHORT).show()
-                return
-            }
-        Toast.makeText(activity, "nobody wins", Toast.LENGTH_SHORT).show()
-
-
-
-
+    fun end(text: String, row:Int) {
+        Toast.makeText(activity, "Game Over $text", Toast.LENGTH_SHORT).show()
+        for(i in 0.. row*row-1)
+        binding.myGrid.getChildAt(i).setOnClickListener(null)
     }
 
+    fun checkPattern(row: Int) {
+
+
+        for (i in 0 until row - 1) {
+            var winningRowPattern = mutableListOf<Int>()
+            var winningColPattern = mutableListOf<Int>()
+
+            for (j in i * row until (row * (i + 1)))
+                winningRowPattern.add(j)
+            for (k in i until row * row step row)
+                winningColPattern.add(k)
+
+
+            if (listX.containsAll(winningRowPattern) ||  //check rows
+                listX.containsAll(winningColPattern) ||  // check columns
+                listX.containsAll(listOf(0, 4, 7)) ||
+                listX.containsAll(listOf(2, 4, 6)) ||
+                listX.containsAll(listOf(0, 7, 14)) ||
+                listX.containsAll(listOf(4, 7, 10))
+            ) {
+                end("player 1 wins", row)
+                return
+            } else if (listO.containsAll(winningRowPattern) ||
+                listO.containsAll(winningColPattern) ||
+                listO.containsAll(listOf(0, 4, 7)) ||
+                listO.containsAll(listOf(2, 4, 6)) ||
+                listO.containsAll(listOf(0, 7, 14)) ||
+                listO.containsAll(listOf(4, 7, 10))
+            ) {
+                end("player 2 wins", row)
+                return
+            }
+
+        }
+
+    }
 }
